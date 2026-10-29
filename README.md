@@ -20,18 +20,52 @@ Writing these up from the recordings took me about 4 hours per session. The tool
 
 ## Screenshots
 
-The interface follows the same black and white design as my other projects, with a light and a dark theme. These show the app with no session loaded, so there is no learner data in them.
+These are taken from a **demo session with invented learners** (Maya Fictional, Daniel Example and Priya Sample), invented learner numbers and invented speech. They show the app working on a finished session, and no real assessment data appears in them. The app has a black and white design with a light and a dark theme.
+
+### Signing in
+
+There is no default PIN. The first time the app opens, the assessor creates one. After that it asks for it, and repeated wrong attempts lock the sign-in for a growing period.
 
 | | |
 |---|---|
-| ![Sign-in screen](screenshots/sign-in.png) | ![Session, step 1: upload](screenshots/session-light.png) |
-| Sign in with a PIN | Step 1: upload notes and recordings |
-| ![Session in the dark theme](screenshots/session-dark.png) | ![Database page](screenshots/database.png) |
-| The dark theme | Saved sessions, the archive and backups |
+| ![Create a PIN on first launch](screenshots/create-pin.png) | ![Sign in with a PIN](screenshots/sign-in.png) |
+| First launch: the assessor creates their own PIN | Every later launch: sign in with it |
+
+### Working through a session
+
+| | |
+|---|---|
+| ![Session overview in the light theme](screenshots/session-light.png) | ![Session overview in the dark theme](screenshots/session-dark.png) |
+| A finished session reopens where the assessor left off | The same screen in the dark theme |
+
+**Step 2, review and confirm.** The assessor checks the transcript and confirms the window in which each learner gave their presentation and answered questions. Every duration in the record comes from these confirmed windows.
+
+![Step 2: review the transcript](screenshots/step2-review.png)
+
+![Step 2: confirmed spans for each learner](screenshots/step2-spans.png)
+
+**Step 3, generate.** Checks run before any money is spent: group size, every voice matched, a topic set and every window confirmed. The assessor can add what they saw on the day, and the app shows an estimated cost.
+
+![Step 3: pre-generation checks and estimated cost](screenshots/step3-generate.png)
+
+**Step 4, review and download.** Each learner's record opens as a card. Every comment is backed by a quote and a timestamp, and the card says how the document was produced.
+
+![Step 4: a learner's record with its provenance panel](screenshots/learner-card-provenance.png)
+
+![Step 4: criterion comments with quotes and timestamps](screenshots/task1-evidence.png)
+
+![Step 4 in the dark theme](screenshots/step4-dark.png)
+
+### Data and settings
+
+| | |
+|---|---|
+| ![Database page](screenshots/database.png) | |
+| Saved sessions, backups and a self-contained export for an external quality check | |
 
 ![Settings page](screenshots/settings.png)
 
-Settings: assessor and centre details, and which AI model drafts the record.
+Settings: assessor and centre details, the AI model, session timings, backups, and data protection tools for retention and for erasing a single learner.
 
 ## How it works
 
@@ -64,11 +98,13 @@ flowchart TD
 
 **The record must survive.** Everything is stored in one SQLite database with JSON backups, so a record can be produced again if an external quality check asks for it.
 
+**Security reviewed, then fixed.** I ran an AI-assisted security audit (Cloudflare's open-source security-audit skill) over the highest-risk parts of the code. It was a read-only review of the source, so I treated its findings as leads to verify rather than facts. The real ones are fixed and tested: the app has no default PIN, locks sign-in after repeated wrong attempts and listens only on the local machine; erasing a learner now removes every copy of their data and not only the database rows; and a record can no longer be matched to the wrong learner's document.
+
 ## Testing and quality
 
-- 330 automated tests across 18 test files, written with pytest
+- Over 480 automated tests across 22 test files, written with pytest
 - Every change is linted, format-checked and tested by GitHub Actions
-- Tests cover speaker verification, evidence rules, validators, document building, backup and session restore
+- Tests cover speaker verification, evidence rules, validators, document building, backup, session restore, the PIN gate and data erasure
 - The prompt sent to the model is locked with a checksum, so it cannot change by accident
 
 ## Stack
@@ -88,12 +124,13 @@ flowchart TD
 - The audio is transcribed on the assessor's own machine and is never uploaded.
 - The transcript text is sent to the Claude API to draft the comments.
 - Learner names, recordings, transcripts, documents and the database are excluded from version control. The repository holds source code only.
-- The app is protected by a PIN.
+- The app is protected by a PIN that the assessor creates on first launch. It is stored only as a salted hash, repeated wrong attempts lock the sign-in, and the app listens on the local machine only.
+- Retention and erasure tools remove a session or a single learner from the database, the backups and the generated documents.
 
 ## Size
 
 - About 21,000 lines of application code
-- About 4,600 lines of tests
+- About 5,600 lines of tests
 - Set-up scripts that install, repair and update the app on a new PC with one command
 
 ## What I learned
