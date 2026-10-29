@@ -18,6 +18,21 @@ Writing these up from the recordings took me about 4 hours per session. The tool
 4. The app drafts each learner's record, quoting what they said.
 5. The assessor edits the drafts and downloads one Word document per learner.
 
+## Screenshots
+
+The interface follows the same black and white design as my other projects, with a light and a dark theme. These show the app with no session loaded, so there is no learner data in them.
+
+| | |
+|---|---|
+| ![Sign-in screen](screenshots/sign-in.png) | ![Session, step 1: upload](screenshots/session-light.png) |
+| Sign in with a PIN | Step 1: upload notes and recordings |
+| ![Session in the dark theme](screenshots/session-dark.png) | ![Database page](screenshots/database.png) |
+| The dark theme | Saved sessions, the archive and backups |
+
+![Settings page](screenshots/settings.png)
+
+Settings: assessor and centre details, the AI model, session timings, retention and the PIN.
+
 ## How it works
 
 ```mermaid
