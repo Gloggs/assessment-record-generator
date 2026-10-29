@@ -31,7 +31,7 @@ The interface follows the same black and white design as my other projects, with
 
 ![Settings page](screenshots/settings.png)
 
-Settings: assessor and centre details, the AI model, session timings, retention and the PIN.
+Settings: assessor and centre details, and which AI model drafts the record.
 
 ## How it works
 
