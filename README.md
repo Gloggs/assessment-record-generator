@@ -15,8 +15,80 @@ Writing these up from the recordings took me about 4 hours per session. The tool
 1. The assessor uploads their notes and the two recordings.
 2. The app transcribes the audio and works out who is speaking.
 3. The assessor checks the transcripts and confirms which voice is which learner.
-4. The app drafts each learner's record, quoting what they said.
-5. The assessor edits the drafts and downloads one Word document per learner.
+4. The assessor declares that they listened to the recordings and records what happened on the day. Nothing is drafted until they have.
+5. The app drafts each learner's record, quoting what they said.
+6. The assessor edits and approves each draft, then downloads one Word document per learner.
+
+## Governance: the assessor stays in charge
+
+The tool drafts. **The assessor is accountable for every record**, so their input is built into the workflow, recorded with their name and the time, and enforced in the code. It is not left to good intentions.
+
+### Before a draft can be generated
+
+Generation will not start until the assessor has made four declarations. This is checked in the code that generates, not only by greying out a button.
+
+| Checkpoint | What the assessor does | What stops generation |
+|---|---|---|
+| **Recording checked** | Listens to both recordings on the day and confirms the audio is clear enough to assess, or describes what was wrong | No declaration on record |
+| **Learners identified** | Reviews which voice is linked to which learner and confirms every name is right | Any learner with no voice linked. If a match changes afterwards, the confirmation is withdrawn automatically |
+| **Day record written** | Writes their own account of what happened on the day: the room, interruptions, adjustments. If nothing happened, says so explicitly | An empty or token entry |
+| **Windows confirmed** | Places each learner's presentation and question window by ear | Any window still on the software's guess |
+
+The checkpoints show at the top of the Session page, with who confirmed each one and when.
+
+![Checkpoints outstanding: three are waiting for the assessor](screenshots/governance-checkpoints-locked.png)
+
+**One learner is not linked to a voice, so the assessor cannot confirm who is who.** The confirm button stays disabled until every learner in the group is linked.
+
+![The assessor cannot confirm identities while a learner has no voice linked](screenshots/governance-identity-blocked.png)
+
+**Until the declarations are made, the pre-generation checks show red crosses and Generate stays locked.**
+
+![Pre-generation checks with three red crosses and the Generate button locked](screenshots/governance-generation-locked.png)
+
+**The assessor makes each declaration in their own words, with their name and the time recorded.**
+
+![The assessor's declarations: recording, who is who, and the day record](screenshots/governance-declarations-confirmed.png)
+
+![All four checkpoints confirmed, with the assessor's name and time](screenshots/governance-checkpoints-met.png)
+
+**Only then does Generate unlock.**
+
+![Every pre-generation check passed and Generate enabled](screenshots/governance-generation-cleared.png)
+
+### After a draft is generated
+
+The assessor approves each learner's record. **The batch download is held until every record has been approved.**
+
+![Batch download held while two of three records are approved](screenshots/governance-batch-held.png)
+
+![Batch download available once all three are approved](screenshots/governance-batch-released.png)
+
+### The audit trail
+
+Every declaration and withdrawal is logged. Each record's "How this document was produced" panel lists the assessor's declarations, the Database page shows the log across sessions, and every session export carries the same record, so an external quality check can see who confirmed what and when without needing the app.
+
+![A record's provenance panel listing the assessor's declarations](screenshots/governance-provenance.png)
+
+![The governance log across sessions](screenshots/governance-log.png)
+
+### Other controls that keep a person in the loop
+
+- **Observations.** The assessor records what the recording cannot show, and any reasonable adjustment applied. These can evidence a criterion, and are never blended with a transcript quote.
+- **No evidence is not a fail.** If a criterion cannot be evidenced from the transcript, it goes to the assessor. The model is not allowed to invent text.
+- **Quotes are checked.** Every quote must appear in that learner's own assessment window, and names are checked against the roster.
+- **Edits are visible.** The draft as generated is kept beside the assessor's version, and each record states how many times it was edited, or that it was released as drafted.
+- **Defects need a decision.** Downloading with checks outstanding needs an explicit acknowledgement, recorded against the session.
+- **Judgements are never made by code.** The pass tick, the task-brief tick and the quality-assurance rows on the form are left for people.
+- **The instruction sent to the model is locked** with a checksum, and any local change is recorded on every record.
+- **Degraded runs are recorded.** If transcription fell back from the best path, the session says so on screen, in the database and in the export.
+- **Access is controlled.** A PIN the assessor creates, a sign-in lockout, and a server that listens on the local machine only.
+
+### What this does not claim
+
+- A tick cannot prove that someone listened. A checkpoint is an attestation: it is a named, timed, recorded step that cannot be skipped by accident, and an untrue declaration is on the record against a person.
+- It is a single-user local application. Someone with access to the machine could edit the database directly, so device security and backups still matter.
+- Per-learner downloads stay open so one problem record never holds up the others, and each shows whether it has been approved.
 
 ## Screenshots
 
@@ -102,9 +174,9 @@ flowchart TD
 
 ## Testing and quality
 
-- Over 480 automated tests across 22 test files, written with pytest
+- Over 500 automated tests across 23 test files, written with pytest
 - Every change is linted, format-checked and tested by GitHub Actions
-- Tests cover speaker verification, evidence rules, validators, document building, backup, session restore, the PIN gate and data erasure
+- Tests cover speaker verification, evidence rules, validators, document building, backup, session restore, the PIN gate, data erasure and the assessor checkpoints
 - The prompt sent to the model is locked with a checksum, so it cannot change by accident
 
 ## Stack
@@ -129,8 +201,8 @@ flowchart TD
 
 ## Size
 
-- About 21,000 lines of application code
-- About 5,600 lines of tests
+- About 21,500 lines of application code
+- About 5,800 lines of tests
 - Set-up scripts that install, repair and update the app on a new PC with one command
 
 ## What I learned
