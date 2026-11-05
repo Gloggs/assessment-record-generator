@@ -2,13 +2,13 @@
 
 A Python web app that turns two audio recordings of a spoken English assessment into a drafted record for each learner. The assessor reviews, edits and approves every record.
 
-The source code is private because it was built around real assessment work. I am happy to walk through it in an interview.
+A personal project, still in development. The source code is private for now; I am happy to walk through it in an interview.
 
 ## The problem
 
 A Functional Skills English Level 2 assessment (Speaking, Listening and Communicating) has two parts. Each learner gives a presentation, then the group holds a discussion. Afterwards the assessor writes a record for every learner: a comment against each criterion, backed by what the learner said, and a feedback paragraph.
 
-Writing these up from the recordings took me about 4 hours per session. The tool cut that to about 30 minutes. The assessor still makes every judgement.
+Writing these up by hand from the recordings takes hours for each session. The tool drafts them; the assessor still makes every judgement.
 
 ## What it does
 
